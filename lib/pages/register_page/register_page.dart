@@ -1,3 +1,4 @@
+import 'package:app_development/pages/shop_page/shop_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,9 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage>
+    with TickerProviderStateMixin {
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,9 +65,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 24,
                 ),
                 Form(
+                  key: _key,
                   child: Column(
                     children: [
                       TextFormField(
+                        autovalidateMode: AutovalidateMode.disabled,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
@@ -84,11 +89,18 @@ class _RegisterPageState extends State<RegisterPage> {
                             color: Colors.grey,
                           ),
                         ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "INVALID EMAIL";
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(
                         height: 30,
                       ),
                       TextFormField(
+                        autovalidateMode: AutovalidateMode.disabled,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
@@ -111,6 +123,12 @@ class _RegisterPageState extends State<RegisterPage> {
                             color: Colors.grey,
                           ),
                         ),
+                        validator: (value) {
+                          if (value!.length < 8) {
+                            return "Please try again";
+                          }
+                          return null;
+                        },
                       ),
                     ],
                   ),
@@ -136,27 +154,43 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4461F2),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x264461F2),
-                        blurRadius: 20,
-                        spreadRadius: 20,
+                InkWell(
+                  onTap: () {
+                    var checkRegister = _key.currentState!.validate();
+                    if (checkRegister) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) {
+                            return const ProductPage();
+                          },
+                        ),
+                        (route) => false,
+                      );
+                    }
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4461F2),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x264461F2),
+                          blurRadius: 20,
+                          spreadRadius: 20,
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      "Sign In",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.7,
                       ),
-                    ],
-                  ),
-                  child: const Text(
-                    "Sign In",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.7,
                     ),
                   ),
                 ),
